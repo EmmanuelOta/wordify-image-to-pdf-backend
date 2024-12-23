@@ -4,6 +4,10 @@ const PDFDocument = require("pdfkit");
 const multipart = require("parse-multipart-data");
 
 exports.convertImageToText = functions.https.onRequest(
+	{
+		timeoutSeconds: 180, // 9 minutes
+		memory: "1GiB", // Increased memory allocation
+	},
 	async (request, response) => {
 		// Enable CORS
 		response.set("Access-Control-Allow-Origin", "*");
