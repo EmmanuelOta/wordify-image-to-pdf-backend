@@ -1,0 +1,1 @@
+A firebase function to handle image processing which involves extracting text from images and converting them to PDF files.

@@ -1,9 +1,9 @@
-import * as functions from "firebase-functions/v2";
-import * as tesseract from "tesseract.js";
-import * as PDFDocument from "pdfkit";
-import * as multipart from "parse-multipart-data";
+const functions = require("firebase-functions/v2");
+const tesseract = require("tesseract.js");
+const PDFDocument = require("pdfkit");
+const multipart = require("parse-multipart-data");
 
-export const convertImageToText = functions.https.onRequest(
+exports.convertImageToText = functions.https.onRequest(
 	async (request, response) => {
 		// Enable CORS
 		response.set("Access-Control-Allow-Origin", "*");
