@@ -51,7 +51,10 @@ exports.convertImageToText = functions.https.onRequest(
 					} = await tesseract.recognize(file.data, "eng", {
 						logger: (info) =>
 							console.log(
-								`Processing ${file.filename}: ${info.status}`
+								"Processing " +
+									file.filename +
+									": " +
+									info.status
 							),
 					});
 
@@ -97,21 +100,25 @@ exports.convertImageToText = functions.https.onRequest(
 				doc.end();
 			});
 
-			// Set response headers
-			response.set("Content-Type", "application/pdf");
-			response.set(
-				"Content-Disposition",
-				"attachment; filename=extracted-texts.pdf"
-			);
+			 // Create text file content
+            const textContent = extractedTexts
+                .map(item => `=== ${item.filename} ===\n\n${item.text}\n\n`)
+                .join('---\n\n');
 
-			// Send the PDF buffer
-			response.send(pdfBuffer);
-		} catch (error) {
-			console.error("Error:", error);
-			response.status(500).json({
-				error: "Failed to process images",
-				details: error.message,
-			});
-		}
-	}
+            // Set response headers for JSON
+            response.set('Content-Type', 'application/json');
+
+            // Send both files as base64 encoded strings
+            response.json({
+                pdf: pdfBuffer.toString('base64'),
+                text: Buffer.from(textContent).toString('base64')
+            });
+        } catch (error) {
+            console.error("Error:", error);
+            response.status(500).json({
+                error: "Failed to process images",
+                details: error.message,
+            });
+        }
+    }
 );
